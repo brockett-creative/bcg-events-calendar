@@ -3,7 +3,7 @@
  * Plugin Name: BCG Events Calendar
  * Description: A handcrafted events calendar system for BCG websites. Requires ACF Pro or ACF Free.
  * Author: BCGSam
- * Version: 2.0.0
+ * Version: 2.0.1
  * Text Domain: bcg-events-calendar
  * GitHub Plugin URI: https://github.com/brockett-creative/bcg-events-calendar
  */
