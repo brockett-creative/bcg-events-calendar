@@ -88,13 +88,36 @@ add_shortcode( 'events_archive', function() {
 
     $fallback_image = get_field( 'event_fallback_image', 'option' );
 
-    // Shared: upcoming standard events only
+    // Shared: upcoming standard events only.
+    // "Upcoming" = event_end_date hasn't passed yet (if set), otherwise
+    // fall back to event_start_date. This ensures multi-day events with a
+    // date range stay visible even after the start date has passed, as
+    // long as the end date hasn't.
     $upcoming_clause = array(
         'relation' => 'AND',
         array(
-            'key'     => 'event_start_date',
-            'value'   => date( 'Ymd' ),
-            'compare' => '>=',
+            'relation' => 'OR',
+            array(
+                // Has an end date, and it hasn't passed yet.
+                'key'     => 'event_end_date',
+                'value'   => date( 'Ymd' ),
+                'compare' => '>=',
+            ),
+            array(
+                'relation' => 'AND',
+                array(
+                    // No end date set (ACF saves it as an empty string).
+                    'key'     => 'event_end_date',
+                    'value'   => '',
+                    'compare' => '=',
+                ),
+                array(
+                    // So fall back to checking the start date.
+                    'key'     => 'event_start_date',
+                    'value'   => date( 'Ymd' ),
+                    'compare' => '>=',
+                ),
+            ),
         ),
         array(
             'relation' => 'OR',
@@ -395,8 +418,6 @@ add_shortcode( 'single_event', function() {
    ================================================ */
 add_shortcode( 'recurring_events_list', function() {
 
-    // $accent_color = get_field( 'event_accent_color', 'option' );
-
     $args = array(
         'post_type'      => 'events',
         'posts_per_page' => 9999,
@@ -418,7 +439,6 @@ add_shortcode( 'recurring_events_list', function() {
         echo '<ul class="bcg-events-list">';
         while ( $query->have_posts() ) : $query->the_post();
             $recurrence = get_field( 'event_recurrence' );
-            // $style = $accent_color ? ' style="color: ' . esc_attr( $accent_color ) . ';"' : '';
             ?>
             <li class="bcg-events-list-item">
                 <a class="bcg-events-list-title" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
@@ -446,8 +466,6 @@ add_shortcode( 'recurring_events_list', function() {
    ================================================ */
 add_shortcode( 'standard_events_list', function() {
 
-    // $accent_color = get_field( 'event_accent_color', 'option' );
-
     $args = array(
         'post_type'      => 'events',
         'posts_per_page' => 9999,
@@ -457,9 +475,28 @@ add_shortcode( 'standard_events_list', function() {
         'meta_query'     => array(
             'relation' => 'AND',
             array(
-                'key'     => 'event_start_date',
-                'value'   => date( 'Ymd' ),
-                'compare' => '>=',
+                'relation' => 'OR',
+                array(
+                    // Has an end date, and it hasn't passed yet.
+                    'key'     => 'event_end_date',
+                    'value'   => date( 'Ymd' ),
+                    'compare' => '>=',
+                ),
+                array(
+                    'relation' => 'AND',
+                    array(
+                        // No end date set (ACF saves it as an empty string).
+                        'key'     => 'event_end_date',
+                        'value'   => '',
+                        'compare' => '=',
+                    ),
+                    array(
+                        // So fall back to checking the start date.
+                        'key'     => 'event_start_date',
+                        'value'   => date( 'Ymd' ),
+                        'compare' => '>=',
+                    ),
+                ),
             ),
             array(
                 'relation' => 'OR',
@@ -485,7 +522,6 @@ add_shortcode( 'standard_events_list', function() {
         echo '<ul class="bcg-events-list">';
         while ( $query->have_posts() ) : $query->the_post();
             $start_date = get_field( 'event_start_date' );
-            // $style = $accent_color ? ' style="color: ' . esc_attr( $accent_color ) . ';"' : '';
             ?>
             <li class="bcg-events-list-item">
                 <a class="bcg-events-list-title" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
@@ -525,9 +561,28 @@ add_shortcode( 'upcoming_events_list', function( $atts ) {
         'meta_query'     => array(
             'relation' => 'AND',
             array(
-                'key'     => 'event_start_date',
-                'value'   => date( 'Ymd' ),
-                'compare' => '>=',
+                'relation' => 'OR',
+                array(
+                    // Has an end date, and it hasn't passed yet.
+                    'key'     => 'event_end_date',
+                    'value'   => date( 'Ymd' ),
+                    'compare' => '>=',
+                ),
+                array(
+                    'relation' => 'AND',
+                    array(
+                        // No end date set (ACF saves it as an empty string).
+                        'key'     => 'event_end_date',
+                        'value'   => '',
+                        'compare' => '=',
+                    ),
+                    array(
+                        // So fall back to checking the start date.
+                        'key'     => 'event_start_date',
+                        'value'   => date( 'Ymd' ),
+                        'compare' => '>=',
+                    ),
+                ),
             ),
             array(
                 'relation' => 'OR',
