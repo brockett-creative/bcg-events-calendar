@@ -5,7 +5,7 @@
  * Author: BCGSam
  * Version: 2.0.0
  * Text Domain: bcg-events-calendar
- * GitHub Plugin URI: https://github.com/brockett-creative-group/bcg-events-calendar
+ * GitHub Plugin URI: https://github.com/brockett-creative/bcg-events-calendar
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
